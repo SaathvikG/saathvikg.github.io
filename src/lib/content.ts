@@ -149,6 +149,12 @@ export const coursework: Course[] = [
     description: 'Time/frequency-domain analysis, LTI systems, convolution, filtering, sampling, Fourier transforms, and FFT.'
   },
   {
+    code: '18-240',
+    name: 'Structure & Design of Digital Systems',
+    semester: 'Planned Spring 2027',
+    description: 'FPGAs, Boolean algebra, combinational and sequential logic, computer arithmetic, processor design, assembly, HDL, and digital hardware implementation.'
+  },
+  {
     code: '27-215',
     name: 'Thermodynamics of Materials',
     semester: 'Fall 2026',
@@ -189,6 +195,12 @@ export const coursework: Course[] = [
     name: 'Fundamentals of Programming',
     semester: 'Spring 2026',
     description: 'Python, algorithmic problem-solving, code design, testing, debugging, libraries, and web applications.'
+  },
+  {
+    code: '15-122',
+    name: 'Principles of Imperative Computation',
+    semester: 'Planned Spring 2027',
+    description: 'C programming, data structures, algorithms, program correctness, abstraction, complexity, modularity, debugging, and performance analysis.'
   }
 ]
 
