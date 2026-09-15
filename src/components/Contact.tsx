@@ -57,8 +57,8 @@ export function Contact() {
   return (
     <Section id="contact" eyebrow="Contact" title="Let's talk">
       <p className="max-w-xl text-lg text-muted-foreground">
-        Always glad to talk hardware, embedded systems, or anything in between. Reach out directly, or find me on
-        LinkedIn.
+        Always glad to talk hardware, embedded systems, or anything in between — and open to internship and job
+        opportunities. Reach out directly, or find me on LinkedIn.
       </p>
 
       <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">

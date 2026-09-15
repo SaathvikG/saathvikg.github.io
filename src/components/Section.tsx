@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useScrollReveal } from '@/hooks/useScrollReveal'
+import DecryptedText from '@/components/DecryptedText'
 
 export function Section({
   id,
@@ -24,7 +25,14 @@ export function Section({
             {eyebrow && (
               <p className="mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-primary">
                 <span className="h-px w-6 bg-primary/60" aria-hidden="true" />
-                {eyebrow}
+                <DecryptedText
+                  text={eyebrow}
+                  animateOn="view"
+                  sequential
+                  useOriginalCharsOnly
+                  revealDirection="start"
+                  speed={35}
+                />
               </p>
             )}
             {title && <h2 className="text-3xl font-medium text-foreground md:text-4xl">{title}</h2>}

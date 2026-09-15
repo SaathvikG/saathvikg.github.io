@@ -1,10 +1,13 @@
+import { useState } from 'react'
 import { Section } from '@/components/Section'
 import { useScrollReveal } from '@/hooks/useScrollReveal'
-import { projects } from '@/lib/content'
+import { projects, type Project } from '@/lib/content'
 import SpotlightCard from '@/components/SpotlightCard'
+import { ProjectModal } from '@/components/ProjectModal'
 
 export function Projects() {
   const gridRef = useScrollReveal<HTMLDivElement>({ y: 28, stagger: 0.15, start: 'top 82%' })
+  const [selected, setSelected] = useState<Project | null>(null)
 
   return (
     <Section id="projects" eyebrow="Projects" title="Things I've built">
@@ -13,7 +16,16 @@ export function Projects() {
           <SpotlightCard
             key={project.name}
             spotlightColor="rgba(123, 75, 54, 0.18)"
-            className="group flex flex-col p-0 transition-colors hover:border-primary/40"
+            className="group flex cursor-pointer flex-col p-0 transition-colors hover:border-primary/40"
+            role="button"
+            tabIndex={0}
+            onClick={() => setSelected(project)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                setSelected(project)
+              }
+            }}
           >
             <div className="overflow-hidden border-b border-border bg-muted">
               <img
@@ -43,6 +55,8 @@ export function Projects() {
           </SpotlightCard>
         ))}
       </div>
+
+      {selected && <ProjectModal project={selected} onClose={() => setSelected(null)} />}
     </Section>
   )
 }

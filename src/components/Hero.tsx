@@ -4,10 +4,18 @@ import { profile } from '@/lib/content'
 import SplitText from '@/components/SplitText'
 import Magnet from '@/components/Magnet'
 import Iridescence from '@/components/Iridescence'
+import TextType from '@/components/TextType'
+
+const taglines = [
+  profile.tagline,
+  'Designing circuits from schematic to solder.',
+  'Always tinkering with something new.'
+]
 
 export function Hero() {
   const ref = useRef<HTMLDivElement>(null)
   const [motionOk, setMotionOk] = useState(false)
+  const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: no-preference)')
@@ -15,6 +23,15 @@ export function Hero() {
     const onChange = () => setMotionOk(mq.matches)
     mq.addEventListener('change', onChange)
     return () => mq.removeEventListener('change', onChange)
+  }, [])
+
+  useEffect(() => {
+    const root = document.documentElement
+    const update = () => setIsDark(root.classList.contains('dark'))
+    update()
+    const observer = new MutationObserver(update)
+    observer.observe(root, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
   }, [])
 
   useGSAP(
@@ -45,8 +62,13 @@ export function Hero() {
   return (
     <section id="top" ref={ref} className="relative flex min-h-svh items-center overflow-hidden px-6">
       {motionOk ? (
-        <div aria-hidden="true" className="absolute inset-0 -z-30 opacity-40">
-          <Iridescence color={[0.72, 0.56, 0.42]} amplitude={0.09} speed={0.45} mouseReact />
+        <div aria-hidden="true" className="absolute inset-0 -z-30 opacity-40 dark:opacity-25">
+          <Iridescence
+            color={isDark ? [0.52, 0.32, 0.22] : [0.72, 0.56, 0.42]}
+            amplitude={0.09}
+            speed={0.45}
+            mouseReact
+          />
         </div>
       ) : (
         <div
@@ -56,7 +78,7 @@ export function Hero() {
       )}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-20 bg-gradient-to-b from-background/15 via-background/55 to-background"
+        className="pointer-events-none absolute inset-0 -z-20 bg-gradient-to-b from-background/15 via-background/55 to-background dark:via-background/75"
       />
       <div
         aria-hidden="true"
@@ -79,8 +101,23 @@ export function Hero() {
           to={{ opacity: 1, y: 0 }}
         />
 
-        <p data-hero-fade className="mt-6 max-w-xl text-lg text-muted-foreground md:text-xl">
-          {profile.role} · {profile.tagline}
+        <p data-hero-fade className="mt-6 flex max-w-xl flex-wrap items-baseline gap-x-2 text-lg text-muted-foreground md:text-xl">
+          <span>{profile.role} ·</span>
+          {motionOk ? (
+            <TextType
+              as="span"
+              text={taglines}
+              typingSpeed={38}
+              deletingSpeed={20}
+              pauseDuration={2200}
+              initialDelay={1300}
+              cursorCharacter="_"
+              cursorClassName="text-primary"
+              className="text-muted-foreground"
+            />
+          ) : (
+            <span>{profile.tagline}</span>
+          )}
         </p>
 
         <div data-hero-fade className="mt-10 flex flex-wrap items-center gap-4">

@@ -10,12 +10,12 @@ export const profile = {
   tagline: 'Building embedded systems and PCBs, one board at a time.',
   bio: "Hello! I'm Saathvik, a sophomore studying Electrical Engineering and Materials Science at Carnegie Mellon University.",
   bioExtra:
-    "I spend most of my time around firmware, PCB design, and power electronics — from Commvault's data pipelines to CMU Racing's Formula SAE electric vehicle.",
+    'I like understanding how things work at every level — from the materials they\'re made of to the systems they power.',
   location: 'Pittsburgh, PA',
   email: 'sgubbala@andrew.cmu.edu',
   linkedin: 'https://www.linkedin.com/in/saathvik-gubbala-2714832a3/',
   gpa: '3.6',
-  gradYear: '2029'
+  gradYear: 'Dec 2028'
 }
 
 export type ExperienceItem = {
@@ -195,6 +195,8 @@ export const coursework: Course[] = [
 export const skills = [
   'Python', 'C++', 'Java', 'Git', 'Altium', 'MATLAB', 'Fusion360', 'Solidworks', 'STM32', 'ESP32', 'I2C'
 ]
+
+export const interests = ['Volleyball', 'Anime', 'Baking', 'Traveling', 'Gym', 'Photography', 'Music', 'Fashion']
 
 export const navLinks = [
   { label: 'About', href: '#about' },
