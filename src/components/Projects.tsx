@@ -1,22 +1,75 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Section } from '@/components/Section'
-import { useScrollReveal } from '@/hooks/useScrollReveal'
+import { gsap, useGSAP } from '@/lib/gsap'
 import { projects, type Project } from '@/lib/content'
 import SpotlightCard from '@/components/SpotlightCard'
 import { ProjectModal } from '@/components/ProjectModal'
 
 export function Projects() {
-  const gridRef = useScrollReveal<HTMLDivElement>({ y: 28, stagger: 0.15, start: 'top 82%' })
+  const gridRef = useRef<HTMLDivElement>(null)
   const [selected, setSelected] = useState<Project | null>(null)
+
+  useGSAP(
+    () => {
+      const grid = gridRef.current
+      if (!grid) return
+      const cards = Array.from(grid.children) as HTMLElement[]
+      const total = cards.length
+
+      const mm = gsap.matchMedia()
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        cards.forEach((card, index) => {
+          const angle = (index / total) * 360 - 110
+          const radians = (angle * Math.PI) / 180
+
+          gsap.fromTo(
+            card,
+            {
+              x: Math.sin(radians) * 260,
+              y: Math.cos(radians + 0.5) * 150 - 40,
+              z: Math.cos(radians) * -420,
+              rotateY: -Math.sin(radians) * 55,
+              rotateZ: -Math.sin(radians) * 12,
+              scale: 0.6,
+              opacity: 0
+            },
+            {
+              x: 0,
+              y: 0,
+              z: 0,
+              rotateY: 0,
+              rotateZ: 0,
+              scale: 1,
+              opacity: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: grid,
+                start: 'top 95%',
+                end: 'top 35%',
+                scrub: 0.6
+              }
+            }
+          )
+        })
+      })
+      return () => mm.revert()
+    },
+    { scope: gridRef, dependencies: [projects.length] }
+  )
 
   return (
     <Section id="projects" eyebrow="Projects" title="Things I've built">
-      <div ref={gridRef} className="grid gap-6 md:grid-cols-2">
+      <div
+        ref={gridRef}
+        className="grid gap-6 md:grid-cols-2"
+        style={{ perspective: 1400, transformStyle: 'preserve-3d' }}
+      >
         {projects.map((project) => (
           <SpotlightCard
             key={project.name}
             spotlightColor="rgba(123, 75, 54, 0.18)"
             className="group flex cursor-pointer flex-col p-0 transition-colors hover:border-primary/40"
+            style={{ transformStyle: 'preserve-3d', backfaceVisibility: 'hidden', willChange: 'transform, opacity' }}
             role="button"
             tabIndex={0}
             onClick={() => setSelected(project)}

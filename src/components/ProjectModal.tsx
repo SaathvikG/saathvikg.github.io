@@ -1,9 +1,18 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, type PointerEventHandler } from 'react'
 import { createPortal } from 'react-dom'
 import type { Project } from '@/lib/content'
 
+const MIN_ZOOM = 1
+const MAX_ZOOM = 3
+const ZOOM_STEP = 0.5
+
 export function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null)
+  const viewportRef = useRef<HTMLDivElement>(null)
+  const [zoom, setZoom] = useState(1)
+  const [pan, setPan] = useState({ x: 0, y: 0 })
+  const dragRef = useRef<{ startX: number; startY: number; originX: number; originY: number } | null>(null)
+  const [dragging, setDragging] = useState(false)
 
   useEffect(() => {
     closeRef.current?.focus()
@@ -18,6 +27,51 @@ export function ProjectModal({ project, onClose }: { project: Project; onClose: 
       document.body.style.overflow = prevOverflow
     }
   }, [onClose])
+
+  useEffect(() => {
+    setZoom(1)
+    setPan({ x: 0, y: 0 })
+  }, [project.name])
+
+  const clampPan = (next: { x: number; y: number }, z: number) => {
+    const el = viewportRef.current
+    if (!el) return next
+    const maxX = ((z - 1) * el.clientWidth) / 2
+    const maxY = ((z - 1) * el.clientHeight) / 2
+    return {
+      x: Math.min(maxX, Math.max(-maxX, next.x)),
+      y: Math.min(maxY, Math.max(-maxY, next.y))
+    }
+  }
+
+  const applyZoom = (next: number) => {
+    const z = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, next))
+    setZoom(z)
+    if (z === MIN_ZOOM) {
+      setPan({ x: 0, y: 0 })
+    } else {
+      setPan((p) => clampPan(p, z))
+    }
+  }
+
+  const onPointerDown: PointerEventHandler<HTMLDivElement> = (e) => {
+    if (zoom === MIN_ZOOM) return
+    ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+    dragRef.current = { startX: e.clientX, startY: e.clientY, originX: pan.x, originY: pan.y }
+    setDragging(true)
+  }
+
+  const onPointerMove: PointerEventHandler<HTMLDivElement> = (e) => {
+    if (!dragRef.current) return
+    const dx = e.clientX - dragRef.current.startX
+    const dy = e.clientY - dragRef.current.startY
+    setPan(clampPan({ x: dragRef.current.originX + dx, y: dragRef.current.originY + dy }, zoom))
+  }
+
+  const endDrag: PointerEventHandler<HTMLDivElement> = () => {
+    dragRef.current = null
+    setDragging(false)
+  }
 
   return createPortal(
     <div role="dialog" aria-modal="true" aria-label={project.name} className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8">
@@ -41,11 +95,52 @@ export function ProjectModal({ project, onClose }: { project: Project; onClose: 
         </button>
 
         <div className="overflow-y-auto">
-          <img
-            src={project.image}
-            alt={project.imageAlt}
-            className="w-full max-h-[55vh] object-contain bg-muted"
-          />
+          <div
+            ref={viewportRef}
+            className="relative h-[55vh] w-full touch-none overflow-hidden bg-muted"
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+          >
+            <img
+              src={project.image}
+              alt={project.imageAlt}
+              draggable={false}
+              className="h-full w-full select-none object-contain"
+              style={{
+                transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`,
+                transition: dragging ? 'none' : 'transform 200ms ease-out',
+                cursor: zoom > MIN_ZOOM ? (dragging ? 'grabbing' : 'grab') : 'default'
+              }}
+            />
+
+            <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => applyZoom(zoom - ZOOM_STEP)}
+                disabled={zoom <= MIN_ZOOM}
+                aria-label="Zoom out"
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-background/60 text-foreground backdrop-blur-sm transition-colors hover:bg-background/85 disabled:pointer-events-none disabled:opacity-40"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3.5 8H12.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => applyZoom(zoom + ZOOM_STEP)}
+                disabled={zoom >= MAX_ZOOM}
+                aria-label="Zoom in"
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-background/60 text-foreground backdrop-blur-sm transition-colors hover:bg-background/85 disabled:pointer-events-none disabled:opacity-40"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M8 3.5V12.5M3.5 8H12.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
           <div className="p-6 sm:p-8">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
               <h3 className="font-heading text-2xl text-foreground">{project.name}</h3>
