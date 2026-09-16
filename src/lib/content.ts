@@ -205,7 +205,8 @@ export const coursework: Course[] = [
 ]
 
 export const skills = [
-  'Python', 'C++', 'Java', 'Git', 'Altium', 'MATLAB', 'Fusion360', 'Solidworks', 'STM32', 'ESP32', 'I2C'
+  'Python', 'C++', 'Java', 'Git', 'Altium', 'MATLAB', 'Fusion360', 'Solidworks', 'STM32', 'ESP32', 'I2C',
+  'Verilog', 'Microcontrollers', 'FPGAs'
 ]
 
 export const interests = ['Volleyball', 'Anime', 'Baking', 'Traveling', 'Gym', 'Photography', 'Music', 'Fashion']
