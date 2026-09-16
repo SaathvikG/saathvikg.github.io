@@ -5,6 +5,7 @@ import SplitText from '@/components/SplitText'
 import Magnet from '@/components/Magnet'
 import Iridescence from '@/components/Iridescence'
 import TextType from '@/components/TextType'
+import profilePhoto from '@/assets/profile-photo.jpg'
 
 const taglines = [
   profile.tagline,
@@ -85,58 +86,74 @@ export function Hero() {
         className="pointer-events-none absolute inset-0 -z-10 opacity-[0.35] [background-image:linear-gradient(color-mix(in_oklab,var(--color-foreground)_6%,transparent)_1px,transparent_1px),linear-gradient(90deg,color-mix(in_oklab,var(--color-foreground)_6%,transparent)_1px,transparent_1px)] [background-size:56px_56px] [mask-image:radial-gradient(60%_60%_at_50%_40%,black,transparent)]"
       />
 
-      <div className="mx-auto w-full max-w-5xl py-32">
-        <p data-hero-fade className="mb-4 font-mono text-xs uppercase tracking-[0.25em] text-primary">
-          {profile.school}
-        </p>
+      <div className="mx-auto grid w-full max-w-5xl grid-cols-1 items-center gap-12 py-32 md:grid-cols-[1.3fr_1fr] md:gap-10">
+        <div>
+          <p data-hero-fade className="mb-4 font-mono text-xs uppercase tracking-[0.25em] text-primary">
+            {profile.school}
+          </p>
 
-        <SplitText
-          text={profile.name}
-          tag="h1"
-          textAlign="left"
-          className="text-5xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-6xl md:text-7xl"
-          delay={22}
-          duration={0.9}
-          from={{ opacity: 0, y: 48 }}
-          to={{ opacity: 1, y: 0 }}
-        />
+          <SplitText
+            text={profile.name}
+            tag="h1"
+            textAlign="left"
+            className="text-5xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-6xl md:text-7xl"
+            delay={22}
+            duration={0.9}
+            from={{ opacity: 0, y: 48 }}
+            to={{ opacity: 1, y: 0 }}
+          />
 
-        <p data-hero-fade className="mt-6 flex max-w-xl flex-wrap items-baseline gap-x-2 text-lg text-muted-foreground md:text-xl">
-          <span>{profile.role} ·</span>
-          {motionOk ? (
-            <TextType
-              as="span"
-              text={taglines}
-              typingSpeed={38}
-              deletingSpeed={20}
-              pauseDuration={2200}
-              initialDelay={1300}
-              cursorCharacter="_"
-              cursorClassName="text-primary"
-              className="text-muted-foreground"
-            />
-          ) : (
-            <span>{profile.tagline}</span>
-          )}
-        </p>
+          <p data-hero-fade className="mt-6 flex max-w-xl flex-wrap items-baseline gap-x-2 text-lg text-muted-foreground md:text-xl">
+            <span>{profile.role} ·</span>
+            {motionOk ? (
+              <TextType
+                as="span"
+                text={taglines}
+                typingSpeed={38}
+                deletingSpeed={20}
+                pauseDuration={2200}
+                initialDelay={1300}
+                cursorCharacter="_"
+                cursorClassName="text-primary"
+                className="text-muted-foreground"
+              />
+            ) : (
+              <span>{profile.tagline}</span>
+            )}
+          </p>
 
-        <div data-hero-fade className="mt-10 flex flex-wrap items-center gap-4">
-          <Magnet padding={40} magnetStrength={4}>
-            <a
-              href="#projects"
-              className="inline-flex h-12 items-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition-transform hover:-translate-y-0.5"
-            >
-              View Projects
-            </a>
-          </Magnet>
-          <Magnet padding={40} magnetStrength={4}>
-            <a
-              href="#contact"
-              className="inline-flex h-12 items-center rounded-full border border-border bg-transparent px-6 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-            >
-              Get in Touch
-            </a>
-          </Magnet>
+          <div data-hero-fade className="mt-10 flex flex-wrap items-center gap-4">
+            <Magnet padding={40} magnetStrength={4}>
+              <a
+                href="#projects"
+                className="inline-flex h-12 items-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition-transform hover:-translate-y-0.5"
+              >
+                View Projects
+              </a>
+            </Magnet>
+            <Magnet padding={40} magnetStrength={4}>
+              <a
+                href="#contact"
+                className="inline-flex h-12 items-center rounded-full border border-border bg-transparent px-6 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              >
+                Get in Touch
+              </a>
+            </Magnet>
+          </div>
+        </div>
+
+        <div data-hero-fade className="relative mx-auto md:ml-auto md:mr-0">
+          <div
+            aria-hidden="true"
+            className="absolute -inset-6 -z-10 rounded-full opacity-60 blur-2xl [background:radial-gradient(closest-side,color-mix(in_oklab,var(--color-accent)_35%,transparent),transparent)]"
+          />
+          <img
+            src={profilePhoto}
+            alt={`${profile.name} portrait`}
+            width={480}
+            height={480}
+            className="h-56 w-56 rounded-full border-4 border-card object-cover object-top shadow-2xl sm:h-72 sm:w-72 md:h-80 md:w-80"
+          />
         </div>
       </div>
 
